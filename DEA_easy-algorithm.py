@@ -1,9 +1,9 @@
 # DEA模型的直接算法
 def statistics():   # 录入数据
-    a = [200,100,100,200,100]  # 河南
-    b = [100,400,100,100,100]  # 山东
-    c = [100,400,200,100,100]  # 四川
-    d = [100,100,100,100,100]  # 江苏
+    a = [400,100,400,200,100]  # 河南
+    b = [100,200,600,100,100]  # 山东
+    c = [100,400,600,100,100]  # 四川
+    d = [200,100,600,100,100]  # 江苏
     e = [100,100,100,100,100]  # 河北
     dmu = [a, b, c, d, e]  # 经营个体列表
     return(dmu)
@@ -36,7 +36,7 @@ def data_clear2(dmu):
     return dmu
 def creat_wij():
     liqz1 = []
-    k1 = 0.1  # 数据精度
+    k1 = 0.01  # 数据精度
     g = k1
     k2 = g
     b = int(10 / k1)  # 保留位数处理数
@@ -49,7 +49,7 @@ def creat_wij():
         k2 = g
 
     liqz2 = []
-    k = 0.1  # 数据精度
+    k = 0.01  # 数据精度
     g = k
     b = int(1 / g)  # 保留位数处理数
     while k < 1:
@@ -58,7 +58,7 @@ def creat_wij():
         liqz2.append(w2)
     wij = [liqz1, liqz2]
     return wij
-def main_operation(dmu,li_wij):   # 主要DEA运算(经营个体列表，录入权重列表)
+def dmu_operation(dmu,li_wij):   # 主要DEA运算(经营个体列表，录入权重列表)
     li3 = []
     liq = []
     for j in range(len(li_wij[0])):
@@ -86,23 +86,32 @@ def main_operation(dmu,li_wij):   # 主要DEA运算(经营个体列表，录入�
     for i in range(len(li_wij[0])):
         for j in range(len(li_wij[1])):
             for k in range(5):
-                if (liq[i][0][k] / lip[j][0][k] > 1):
-                    h0+=1
-                    li_d.append(1)
-                    continue
-                li_d.append(liq[i][0][k]/lip[j][0][k])
+                li_d.append(liq[i][0][k] / lip[j][0][k])
                 h0 += liq[i][0][k] / lip[j][0][k]
-            li3.append([h0,liq[i][1],lip[j][1],li_d])
-            li_d=[]
-            h0=0
+            li3.append([h0, liq[i][1], lip[j][1], li_d])
+            li_d = []
+            h0 = 0
 
+    return li3
+def li3_operation(li3): # 对li3进行约束处理
+    li4=[]
+    li5=[]
+    for i in range(len(li3)):
+        li4.append(li3[i][3])
+    for i in range(len(li4)):
+        li5.append(max(li4[i]))
+    for i in range(len(li3)):
+        for j in range(5):
+            li3[i][3][j]/=li5[i]
+        li3[i][0]=sum(li3[i][3])
     return li3
 def main():
     dmu = statistics()
     # dmu = data_clear2(dmu)
     dmu = data_clear1(dmu)
     li_wij = creat_wij()
-    li3 = main_operation(dmu, li_wij)
+    li3 = dmu_operation(dmu, li_wij)
+    li3=li3_operation(li3)
     li3_max = max(li3)
     print(li3_max)
     # h_max = li3_max[0] / 5  # 总效率最高值
