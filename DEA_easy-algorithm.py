@@ -1,10 +1,10 @@
 # DEA模型的直接算法
 def statistics():   # 录入数据
-    a = [400,100,400,200,100]  # 河南
-    b = [100,200,600,100,100]  # 山东
-    c = [100,400,600,100,100]  # 四川
-    d = [200,100,600,100,100]  # 江苏
-    e = [100,100,100,100,100]  # 河北
+    a = [400,100,400,200,100]
+    b = [100,200,600,100,100]
+    c = [100,400,600,100,100]
+    d = [200,100,600,100,100]
+    e = [100,100,100,100,100]
     dmu = [a, b, c, d, e]  # 经营个体列表
     return(dmu)
 def data_clear1(dmu):  # 清洗数据(经营个体列表)
@@ -99,10 +99,10 @@ def li3_operation(li3): # 对li3进行约束处理
     for i in range(len(li3)):
         li4.append(li3[i][3])
     for i in range(len(li4)):
-        li5.append(max(li4[i]))
+        li5.append(min(li4[i]))
     for i in range(len(li3)):
         for j in range(5):
-            li3[i][3][j]/=li5[i]
+            li3[i][3][j]*=li5[i]
         li3[i][0]=sum(li3[i][3])
     return li3
 def main():
